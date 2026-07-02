@@ -1,17 +1,14 @@
 import jwt from "jsonwebtoken";
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { JwtPayload } from "jsonwebtoken";
-
-interface AuthenticatedRequest extends Request {
-  id?: string;
-}
+import type { AuthRequest } from "../types/auth-request";
 
 interface CustomJwtPayload extends JwtPayload {
   userId: string;
 }
 
 const authenticationToken = (
-  req: AuthenticatedRequest,
+  req: AuthRequest,
   res: Response,
   next: NextFunction,
 ) => {
