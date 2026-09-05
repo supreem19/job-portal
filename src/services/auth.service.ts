@@ -74,9 +74,13 @@ export const loginUser = async (payload: LoginUserPayload) => {
     );
   }
 
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET as string, {
-    expiresIn: "1d",
-  });
+  const token = jwt.sign(
+    { userId: user._id },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: "1d",
+    },
+  );
 
   const userResponse = {
     _id: user._id,
@@ -95,7 +99,10 @@ export const loginUser = async (payload: LoginUserPayload) => {
   };
 };
 
-export const logoutUser = async () => ({ message: "Logged out successfully", success: true });
+export const logoutUser = async () => ({
+  message: "Logged out successfully",
+  success: true,
+});
 
 export const updateUserProfile = async (
   userId: string | undefined,
@@ -111,8 +118,10 @@ export const updateUserProfile = async (
   if (fullName) user.fullName = fullName;
   if (email) user.email = email;
   if (phoneNumber) user.phoneNumber = phoneNumber;
-  if (bio) user.profile.bio = bio;
-  if (skills) user.profile.skills = skills.split(",").map((item) => item.trim());
+  user.profile ??= { skills: [], profilePhoto: "" };
+  if (bio) user.profile!.bio = bio;
+  if (skills)
+    user.profile!.skills = skills.split(",").map((item) => item.trim());
 
   await user.save();
 

@@ -47,7 +47,7 @@ export const getAllJobs = async (req: Request, res: Response) => {
 
 export const getJobById = async (req: Request, res: Response) => {
   try {
-    const result = await getJobByIdService(req.params.id);
+    const result = await getJobByIdService(req.params.id as string);
     return res.status(200).json(result);
   } catch (error) {
     if (error instanceof ServiceError) {

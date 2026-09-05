@@ -44,7 +44,7 @@ export const getAllCompanies = async (req: AuthRequest, res: Response) => {
 
 export const getCompanyById = async (req: Request, res: Response) => {
   try {
-    const result = await getCompanyByIdService(req.params.id);
+    const result = await getCompanyByIdService(req.params.id as string);
     return res.status(200).json(result);
   } catch (error) {
     if (error instanceof ServiceError) {
@@ -61,7 +61,10 @@ export const getCompanyById = async (req: Request, res: Response) => {
 
 export const updateCompany = async (req: Request, res: Response) => {
   try {
-    const result = await updateCompanyService(req.params.id, req.body);
+    const result = await updateCompanyService(
+      req.params.id as string,
+      req.body,
+    );
     return res.status(200).json(result);
   } catch (error) {
     if (error instanceof ServiceError) {
