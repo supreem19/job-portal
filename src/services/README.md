@@ -1,6 +1,13 @@
 This folder contains domain-specific service modules that isolate business logic from controllers.
 In a true microservice setup, each domain folder can be extracted into its own service/process later.
 
+### Job listings
+
+`getAllJobs` returns `{ jobs, status: true }`, with each job's `company` populated
+as the full company document instead of just its ID. Keyword filtering is
+unchanged. If a referenced company no longer exists, `company` is `null`.
+No matching jobs still returns a 404 with `No jobs found`.
+
 ### Registration and profile uploads
 
 Send `POST /api/users/register` using `multipart/form-data` with registration

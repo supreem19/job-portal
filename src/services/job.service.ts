@@ -79,7 +79,7 @@ export const getAllJobsService = async (keyword: string) => {
     ],
   };
 
-  const jobs = await Job.find(query);
+  const jobs = await Job.find(query).populate("company");
   if (!jobs.length) {
     throw new ServiceError(404, "No jobs found");
   }
@@ -88,7 +88,7 @@ export const getAllJobsService = async (keyword: string) => {
 };
 
 export const getJobByIdService = async (jobId: string) => {
-  const job = await Job.findById(jobId);
+  const job = await Job.findById(jobId).populate("application");
   if (!job) {
     throw new ServiceError(404, "No jobs found");
   }
