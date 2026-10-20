@@ -8,6 +8,7 @@ import companyRoute from "./routes/company.routes";
 import jobRoute from "./routes/job.routes";
 import applicationRoute from "./routes/application.routes";
 import uploadRoute from "./routes/upload.routes";
+import { ServiceError } from "./services/service-error";
 
 dotenv.config();
 
@@ -47,13 +48,13 @@ app.use(
   ) => {
     if (error instanceof multer.MulterError) {
       return res.status(400).json({
-        message: error.code === "LIMIT_FILE_SIZE" ? "Image must be 5 MB or smaller" : error.message,
+        message: error.code === "LIMIT_FILE_SIZE" ? "File must be 5 MB or smaller" : error.message,
         success: false,
       });
     }
 
-    if (error instanceof Error && error.message === "Only JPEG, PNG, and WebP images are allowed") {
-      return res.status(400).json({ message: error.message, success: false });
+    if (error instanceof ServiceError) {
+      return res.status(error.statusCode).json({ message: error.message, success: false });
     }
 
     return next(error);

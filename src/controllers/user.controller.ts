@@ -4,16 +4,18 @@ import {
   loginUser,
   logoutUser,
   registerUser,
+  updateUserFile,
   updateUserProfile,
 } from "../services/auth.service";
 import { ServiceError } from "../services/service-error";
-import { uploadProfilePhoto } from "../services/s3.service";
 
 export const register = async (req: Request, res: Response) => {
   try {
-    const profilePhoto = req.file ? await uploadProfilePhoto(req.file) : undefined;
-    const registrationData = profilePhoto ? { ...req.body, profilePhoto } : req.body;
-    const result = await registerUser(registrationData);
+    const files = req.files && !Array.isArray(req.files) ? req.files : undefined;
+    const result = await registerUser(req.body ?? {}, {
+      profilePhoto: files?.profilePhoto?.[0],
+      resume: files?.resume?.[0],
+    });
     return res.status(200).json(result);
   } catch (error) {
     if (error instanceof ServiceError) {
@@ -94,3 +96,29 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
     });
   }
 };
+
+const updateFile = (field: "profilePhoto" | "resume") =>
+  async (req: AuthRequest, res: Response) => {
+    try {
+      const result = await updateUserFile(req.id, field, req.file);
+      return res.status(200).json(result);
+    } catch (error) {
+      if (error instanceof ServiceError) {
+        return res.status(error.statusCode).json({
+          message: error.message,
+          success: false,
+        });
+      }
+
+      console.error(error);
+      return res.status(500).json({
+        message: field === "resume"
+          ? "Server Error updating resume"
+          : "Server Error updating profile photo",
+        success: false,
+      });
+    }
+  };
+
+export const updateResume = updateFile("resume");
+export const updateProfilePhoto = updateFile("profilePhoto");
