@@ -8,6 +8,14 @@ as the full company document instead of just its ID. Keyword filtering is
 unchanged. If a referenced company no longer exists, `company` is `null`.
 No matching jobs still returns a 404 with `No jobs found`.
 
+### Job details
+
+`getJobById` returns `{ job, status: true }`. The job's `application` array
+contains full application documents, including `_id`, `job`, `applicant`,
+`status`, and timestamps. `applicant` remains the applicant's user ID, not a
+populated user profile. Jobs without applications return an empty array.
+A missing job still returns a 404 with `No jobs found`.
+
 ### Registration and profile uploads
 
 Send `POST /api/users/register` using `multipart/form-data` with registration

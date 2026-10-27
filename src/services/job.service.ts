@@ -1,3 +1,4 @@
+import { Application } from "../models/application.model";
 import { Job } from "../models/job.model";
 import { ServiceError } from "./service-error";
 
@@ -88,7 +89,10 @@ export const getAllJobsService = async (keyword: string) => {
 };
 
 export const getJobByIdService = async (jobId: string) => {
-  const job = await Job.findById(jobId).populate("application");
+  const job = await Job.findById(jobId).populate({
+    path: "application",
+    model: Application,
+  });
   if (!job) {
     throw new ServiceError(404, "No jobs found");
   }
